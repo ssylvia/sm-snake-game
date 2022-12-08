@@ -132,6 +132,44 @@ http://patorjk.com/games/snake
 var SNAKE = SNAKE || {};
 window.SNAKE = SNAKE; // this will allow us to access the game in other JS files when the app is loaded up in a codesandbox.com sandbox, that's the only reason it's here
 
+var eventContainer;
+window.addEventListener("message", function (e) {
+  console.log(e.data);
+  if (e.data.method === "snake-game-control") {
+    switch (e.data.control) {
+      case "Left":
+        eventContainer.dispatchEvent(new KeyboardEvent("keydown", {
+          keyCode: 37
+        }));
+        break;
+      case "Right":
+        eventContainer.dispatchEvent(new KeyboardEvent("keydown", {
+          keyCode: 39
+        }));
+        break;
+      case "Up":
+        eventContainer.dispatchEvent(new KeyboardEvent("keydown", {
+          keyCode: 38
+        }));
+        break;
+      case "Down":
+        eventContainer.dispatchEvent(new KeyboardEvent("keydown", {
+          keyCode: 40
+        }));
+        break;
+      case "Start":
+        var start = document.querySelector(".snake-welcome-dialog");
+        var restart = document.querySelector(".snake-try-again-dialog");
+        if (start.style.display !== "none") {
+          start.querySelector("button").click();
+        } else if (restart.style.display !== "none") {
+          restart.querySelector("button").click();
+        }
+        break;
+    }
+  }
+}, false);
+
 /**
  * @method addEventListener
  * @param {Object} obj The object to add an event listener to.
@@ -251,7 +289,7 @@ SNAKE.Snake = SNAKE.Snake || function () {
       isPaused = false;
     function setModeListener(mode, speed) {
       document.getElementById(mode).addEventListener("click", function () {
-        snakeSpeed = speed;
+        snakeSpeed = 200;
       });
     }
     var modeDropdown = document.getElementById("selectMode");
@@ -264,7 +302,7 @@ SNAKE.Snake = SNAKE.Snake || function () {
         } else if (val < 25) {
           val = 75;
         }
-        snakeSpeed = val;
+        snakeSpeed = 200;
         setTimeout(function () {
           document.getElementById("game-area").focus();
         }, 10);
@@ -500,7 +538,8 @@ SNAKE.Snake = SNAKE.Snake || function () {
       var selectDropDown = document.getElementById("selectMode");
       var selectedOption = selectDropDown.options[selectDropDown.selectedIndex];
       if (selectedOption.text.localeCompare("Rush") == 0) {
-        snakeSpeed > 30 ? snakeSpeed -= 5 : snakeSpeed = 30;
+        // snakeSpeed > 30 ? (snakeSpeed -= 5) : (snakeSpeed = 30);
+        snakeSpeed = 200;
       }
       return true;
     };
@@ -512,7 +551,7 @@ SNAKE.Snake = SNAKE.Snake || function () {
     me.handleDeath = function () {
       //Reset speed
       var selectedSpeed = document.getElementById("selectMode").value;
-      snakeSpeed = parseInt(selectedSpeed);
+      snakeSpeed = parseInt(200);
       handleEndCondition(playingBoard.handleDeath);
     };
 
@@ -996,6 +1035,7 @@ SNAKE.Board = SNAKE.Board || function () {
         return;
       }
       elmContainer = myContainer;
+      eventContainer = elmContainer;
       elmPlayingField = null;
       me.setupPlayingField();
     };
@@ -1219,7 +1259,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38337" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "34203" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
