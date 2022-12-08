@@ -167,6 +167,15 @@ window.addEventListener("message", function (e) {
         }
         break;
     }
+  } else if (e.data.theme) {
+    var theme = JSON.parse(e.data.theme);
+    var root = document.querySelector(":root");
+    root.style.setProperty("--backgroundBorder", theme.outlineColor);
+    root.style.setProperty("--background", theme.backgroundColor);
+    root.style.setProperty("--snake", theme.themeColor1);
+    root.style.setProperty("--food", theme.themeColor2);
+    root.style.setProperty("--textColor", theme.titleColor);
+    root.style.setProperty("--dialogBackground", theme.outlineColor);
   }
 }, false);
 
